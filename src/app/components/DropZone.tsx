@@ -24,16 +24,22 @@ const DropZone = () => {
             ])
         }
     }, [])
+
+    const removeImage = (name: string) => {
+        setFiles(prev => prev.filter(file => file.name !== name))
+    }
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
     console.log("files", files)
     return (
-        <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            {
-                isDragActive ?
-                    <p>Drop files here</p> :
-                    <p>Drag 'n' drop some files here, or click to select files</p>
-            }
+        <>
+            <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                {
+                    isDragActive ?
+                        <p>Drop files here</p> :
+                        <p>Drag 'n' drop some files here, or click to select files</p>
+                }
+            </div>
 
             {/* render the images uploaded  */}
 
@@ -45,10 +51,13 @@ const DropZone = () => {
                             width={100}
                             height={100}
                             src={file.preview} alt={file.name} />
+                        <button
+                            onClick={() => removeImage(file.name)}
+                            className="my-2 bg-red-500 text-white p-1 rounded-md">Delete</button>
                     </div>
                 ))}
             </div>
-        </div>
+        </>
     )
 }
 

@@ -7,7 +7,9 @@ import { useDropzone } from "react-dropzone"
 const DropZone = () => {
 
     const [files, setFiles] = useState<any[]>([]);
-    const onDrop = useCallback((acceptedFiles: any) => {
+    const [error, setError] = useState<any[]>([])
+    // catch rejected files to show the error message
+    const onDrop = useCallback((acceptedFiles: any, rejectedFiles: any) => {
         // If there are any accepted files
         if (acceptedFiles.length > 0) {
             // Update the state with the new files
@@ -23,6 +25,8 @@ const DropZone = () => {
                 )
             ])
         }
+        console.log("rejectedFiles", rejectedFiles[0].errors[0].message)
+        setError(prev => [...prev, rejectedFiles])
     }, [])
 
     const removeImage = (name: string) => {
@@ -38,6 +42,7 @@ const DropZone = () => {
         }
     })
     console.log("files", files)
+    console.log("rejected files", error)
     return (
         <>
             <div {...getRootProps()}>
@@ -65,6 +70,25 @@ const DropZone = () => {
                     </div>
                 ))}
             </div>
+            {/* render the error message */}
+            {
+                error.length > 0 && (
+                    <div className="bg-red-500 text-white p-2 rounded-md mt-2">
+                        {
+                            error.map((element: any, index: number) => (
+                                element.map(({ file, errors }: { file: any, errors: any[] }, index: number) => (
+                                    errors.map((err: any, index: number) => (
+                                        <p key={index}>
+                                            {file.name}
+                                            {err.message}
+                                        </p>
+                                    ))
+                                ))
+                            ))
+                        }
+                    </div>
+                )
+            }
         </>
     )
 }

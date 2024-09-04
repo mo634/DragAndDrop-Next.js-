@@ -1,9 +1,10 @@
 "use client"
+import Image from "next/image";
 import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
 
 
-const DropZone = ({ className }: { className: string }) => {
+const DropZone = () => {
 
     const [files, setFiles] = useState<any[]>([]);
     const onDrop = useCallback((acceptedFiles: any) => {
@@ -18,6 +19,7 @@ const DropZone = ({ className }: { className: string }) => {
                     Object.assign(file, {
                         preview: URL.createObjectURL(file)
                     })
+
                 )
             ])
         }
@@ -25,13 +27,27 @@ const DropZone = ({ className }: { className: string }) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
     console.log("files", files)
     return (
-        <div {...getRootProps({ className })}>
+        <div {...getRootProps()}>
             <input {...getInputProps()} />
             {
                 isDragActive ?
                     <p>Drop files here</p> :
                     <p>Drag 'n' drop some files here, or click to select files</p>
             }
+
+            {/* render the images uploaded  */}
+
+            <div className=" bg-blue-700 rounded-md p-2 mt-2">
+                {files.map((file, index) => (
+                    <div key={index}>
+                        <p>{file.name}</p>
+                        <Image
+                            width={100}
+                            height={100}
+                            src={file.preview} alt={file.name} />
+                    </div>
+                ))}
+            </div>
         </div>
     )
 }

@@ -28,7 +28,15 @@ const DropZone = () => {
     const removeImage = (name: string) => {
         setFiles(prev => prev.filter(file => file.name !== name))
     }
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+
+    // add restriction to the file type
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: {
+            // accept all image types
+            'image/*': []
+        }
+    })
     console.log("files", files)
     return (
         <>

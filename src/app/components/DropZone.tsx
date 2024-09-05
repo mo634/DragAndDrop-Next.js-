@@ -25,7 +25,7 @@ const DropZone = () => {
                 )
             ])
         }
-        console.log("rejectedFiles", rejectedFiles[0].errors[0].message)
+
         setError(prev => [...prev, rejectedFiles])
     }, [])
 
@@ -41,18 +41,62 @@ const DropZone = () => {
             'image/*': []
         }
     })
-    console.log("files", files)
-    console.log("rejected files", error)
+    const handleSubmit = async (e: any) => {
+        console.log("submite clicked ")
+
+        e.preventDefault()
+
+        if (!files?.length) return
+
+
+
+        const formData = new FormData()
+        files.forEach(file => formData.append('file', file))
+        formData.append('upload_preset', 'exy2m2qn')
+
+
+
+
+        console.log("files", files)
+
+        const url: string = process.env.NEXT_PUBLIC_CLOUDINARY_URL as string
+        if (!url) {
+            console.error("Cloudinary URL is not defined");
+            return;
+        }
+
+        const data = await fetch(url, {
+            method: 'POST',
+            body: formData
+        }).then(res => res.json())
+
+        console.log(data)
+
+
+
+
+
+
+
+    }
+
     return (
         <>
-            <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                {
-                    isDragActive ?
-                        <p>Drop files here</p> :
-                        <p>Drag 'n' drop some files here, or click to select files</p>
-                }
-            </div>
+            <form onSubmit={handleSubmit}>
+                <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    {
+                        isDragActive ?
+                            <p>Drop files here</p> :
+                            <p>Drag 'n' drop some files here, or click to select files</p>
+                    }
+                </div>
+                <button
+                    className="bg-blue-500 text-white p-2 rounded-md mt-2"
+                >
+                    click to upload on cloudinary
+                </button>
+            </form>
 
             {/* render the images uploaded  */}
 
@@ -89,6 +133,9 @@ const DropZone = () => {
                     </div>
                 )
             }
+
+
+
         </>
     )
 }

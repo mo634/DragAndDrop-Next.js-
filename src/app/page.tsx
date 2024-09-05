@@ -3,8 +3,11 @@ import DropZone from './components/DropZone'
 
 const page = () => {
   return (
-    <div className='flex flex-col justify-center items-center h-screen'><DropZone
-    /></div>
+    <div
+      className='flex flex-col justify-center items-center h-screen'
+    >
+      <DropZone />
+    </div>
   )
 }
 

@@ -2,12 +2,13 @@
 import Image from "next/image";
 import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
-
+import axios from "axios"
 
 const DropZone = () => {
 
     const [files, setFiles] = useState<any[]>([]);
     const [error, setError] = useState<any[]>([])
+    const [uploadProgress, setUploadProgress] = useState<number>(0);
     // catch rejected files to show the error message
     const onDrop = useCallback((acceptedFiles: any, rejectedFiles: any) => {
         // If there are any accepted files
@@ -65,12 +66,25 @@ const DropZone = () => {
             return;
         }
 
-        const data = await fetch(url, {
-            method: 'POST',
-            body: formData
-        }).then(res => res.json())
+        try {
+            await axios.post(url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: (progressEvent) => {
+                    if (progressEvent.lengthComputable) {
+                        const percentComplete = Math.round((progressEvent.loaded / progressEvent.total!) * 100);
+                        console.log(percentComplete)
+                        setUploadProgress(percentComplete);  // Update progress state
+                    }
+                }
+            });
 
-        console.log(data)
+            console.log('Upload successful');
+            setUploadProgress(0); // Reset progress after upload is complete
+        } catch (error) {
+            console.error('Error uploading files:', error);
+        }
 
 
 
